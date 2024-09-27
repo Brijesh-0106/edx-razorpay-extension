@@ -101,24 +101,24 @@ cp edx-razorpay-extension /path/to/openedx/ecommerce/requirements/
        },
    }
    ```
-8. **Modify `env/plugins/ecommerce/apps/ecommerce/settings/production.py`**:
+9. **Modify `env/plugins/ecommerce/apps/ecommerce/settings/production.py`**:
    ```python
      PAYMENT_PROCESSORS = list(PAYMENT_PROCESSORS) + ['extensions.payment.processors.razorpay.RazorPay']
    EXTRA_PAYMENT_PROCESSOR_URLS["razorpay"] = "extensions.payment.processors.razorpay.urls"
    ```
 
-9. **Modify `env/plugins/ecommerce/apps/ecommerce/settings/development.py`**:
+10. **Modify `env/plugins/ecommerce/apps/ecommerce/settings/development.py`**:
    ```python
     PAYMENT_PROCESSORS = ['extensions.payment.processors.razorpay.RazorPay']
    EXTRA_PAYMENT_PROCESSOR_URLS["razorpay"] = "extensions.payment.processors.razorpay.urls"
    ```
 
-10. **Modify `edx-razorpay-extension/extensions/payment/processors/razorpay/processor.py`**:
+11. **Modify `edx-razorpay-extension/extensions/payment/processors/razorpay/processor.py`**:
    ```python
     redirect_url = payment["short_url"]  # Ensure this URL hits in the GET method.
    ```
 
-11. **Modify `edx-razorpay-extension/extensions/payment/processors/razorpay/views.py`**:
+12. **Modify `edx-razorpay-extension/extensions/payment/processors/razorpay/views.py`**:
    ```python
     receipt_url = get_receipt_page_url(
     request,
