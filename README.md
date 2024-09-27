@@ -8,7 +8,7 @@ This is a razorpay extension for edx ecommerce service.
 4. `pip install - /edx/src/edx-razorpay-extension`
 
 # Configurations
-
+2 chnges are starting
 ```vi /edx/etc/ecommerce.yml```
 
 ```yml
