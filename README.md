@@ -107,31 +107,23 @@ cp edx-razorpay-extension /path/to/openedx/ecommerce/requirements/
    EXTRA_PAYMENT_PROCESSOR_URLS["razorpay"] = "extensions.payment.processors.razorpay.urls"
    ```
 
-8. **Modify `env/plugins/ecommerce/apps/ecommerce/settings/development.py`**:
+9. **Modify `env/plugins/ecommerce/apps/ecommerce/settings/development.py`**:
    ```python
-     PAYMENT_PROCESSORS = ['extensions.payment.processors.razorpay.RazorPay']
+    PAYMENT_PROCESSORS = ['extensions.payment.processors.razorpay.RazorPay']
    EXTRA_PAYMENT_PROCESSOR_URLS["razorpay"] = "extensions.payment.processors.razorpay.urls"
-
    ```
 
-- 8 In env/plugins/ecommerce/apps/ecommerce/settings/production.py
-    PAYMENT_PROCESSORS = list(PAYMENT_PROCESSORS) + ['extensions.payment.processors.razorpay.RazorPay']
-    EXTRA_PAYMENT_PROCESSOR_URLS["razorpay"] = "extensions.payment.processors.razorpay.urls"
+10. **Modify `edx-razorpay-extension/extensions/payment/processors/razorpay/processor.py`**:
+   ```python
+    redirect_url = payment["short_url"]  # Ensure this URL hits in the GET method.
+   ```
 
-- 9 In env/plugins/ecommerce/apps/ecommerce/settings/development.py
-    PAYMENT_PROCESSORS = ['extensions.payment.processors.razorpay.RazorPay']
-    EXTRA_PAYMENT_PROCESSOR_URLS["razorpay"] = "extensions.payment.processors.razorpay.urls"
-
-- 10 In edx-razorpay-extension/extensions/payment/processors/razorpay/processor.py
-     def get_transaction_parameters >
-       redirect_url=payment["short_url"] 
-     make above URL hit in get method. #change method 
-
-- 11 In edx-razorpay-extension/extensions/payment/processors/razorpay/views.py
-     def get > 
-       receipt_url = get_receipt_page_url(
-            request,
-            order_number=basket.order_number,
-            site_configuration=basket.site.siteconfiguration,
-            disable_back_button=True,
-        )
+11. **Modify `edx-razorpay-extension/extensions/payment/processors/razorpay/views.py`**:
+   ```python
+    receipt_url = get_receipt_page_url(
+    request,
+    order_number=basket.order_number,
+    site_configuration=basket.site.siteconfiguration,
+    disable_back_button=True,
+)
+   ```
