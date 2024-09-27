@@ -1,39 +1,100 @@
-# Description
-This is a razorpay extension for edx ecommerce service.
-Start
-start of new
-# Setup with devstack.
-1. `make ecommerce-shell`
-2. `cd /edx/src`
-3. `git clone git@github.com:Primzel/edx-razorpay-extension.git`
-4. `pip install - /edx/src/edx-razorpay-extension`
+# Open edX Razorpay Extension
 
-# Configurations
-2 chnges are starting
-```vi /edx/etc/ecommerce.yml```
+This repository contains an extension for integrating Razorpay payment gateway into the Open edX platform. It allows institutions to process payments seamlessly through Razorpay.
 
-```yml
-OSCAR_DEFAULT_CURRENCY: "INR"
-PAYMENT_PROCESSORS:
-- 'ecommerce.extensions.payment.processors.cybersource.Cybersource'
-- 'ecommerce.extensions.payment.processors.cybersource.CybersourceREST'
-- 'ecommerce.extensions.payment.processors.paypal.Paypal'
-- 'ecommerce.extensions.payment.processors.stripe.Stripe'
-- 'extensions.payment.processors.razorpay.RazorPay'
-EXTRA_PAYMENT_PROCESSOR_URLS:
-    razorpay: extensions.payment.processors.razorpay.urls
+## Following are the steps to Integrate razorpay into openedx : - 
+- 0 Install extension by following
+    git clone https://github.com/Primzel/edx-razorpay-extension and cp in ecommerce bash in requirements folder
+    pip install edx-razorpay-extension
+   
+- 1 Go to openedx/frontend-app-payment/src/payment/payment-methods/paypal/service.js and change payment_processor
+   'paypal' to payment_processor: 'razorpay'
+  
+- 2 Now add following things in openedx/config.yml
+    ECOMMERCE_ENABLED_PAYMENT_PROCESSORS:
+    - razorpay
+    ECOMMERCE_EXTRA_PAYMENT_PROCESSOR_CLASSES:
+    - extensions.payment.processors.razorpay.RazorPay
+    ECOMMERCE_EXTRA_PAYMENT_PROCESSOR_URLS:
+      razorpay: extensions.payment.processors.razorpay.urls
+    ECOMMERCE_PAYMENT_PROCESSORS:
+      razorpay:
+        cancel_checkout_path: /checkout/cancel-checkout/
+        client_id: rzp_test_hvDy9KJ3lpn9js
+        client_secret: TogGMrqqeWqQxIqzC0VIeDx7
+        error_url: /checkout/error/
+        lms_form_url: http://local.edly.io/dashboard
+        mode: sandbox
+        receipt_url: /checkout/receipt/
+      
+- 3 Now do the following changes in openedx/ecommerce/ecommerce/extensions/api/v2/views/checkout.py
+    In class CheckoutView > def post 
+      request.data['payment_processor']='razorpay'
+      payment_processor_name = 'razorpay'
 
-PAYMENT_PROCESSOR_CONFIG:
-  edx:
-    razorpay:
-      cancel_checkout_path: "/checkout/cancel-checkout/"
-      client_id: razorpay-account-client-id
-      client_secret: razorpay-account-secret
-      error_url: "/checkout/error/"
-      mode: sandbox
-      receipt_url: "/checkout/receipt/"
-    paypal:
-      mode: sandbox
-      client_id: paypal-account-client-id
-      client_secret: paypal-account-secret
-```
+- 4 In ecommerce/ecommerce/settings/_oscar.py
+    PAYMENT_PROCESSORS = ('extensions.payment.processors.razorpay.RazorPay',)
+    PAYMENT_PROCESSOR_CONFIG = {
+      'edx': {
+        'razorpay': {
+            'mode': 'sandbox',
+            'client_id': 'rzp_test_hvDy9KJ3lpn9js',
+            'client_secret': 'TogGMrqqeWqQxIqzC0VIeDx7',
+            'cancel_checkout_path': PAYMENT_PROCESSOR_CANCEL_PATH,
+            'error_path': PAYMENT_PROCESSOR_ERROR_PATH,
+            'receipt_url': PAYMENT_PROCESSOR_RECEIPT_PATH,
+        },
+
+- 5 In openedx/ecommerce/ecommerce/settings/production.py
+    PAYMENT_PROCESSORS = {
+      'razorpay': {
+        'public_key': 'rzp_test_hvDy9KJ3lpn9js',
+        'secret_key': 'TogGMrqqeWqQxIqzC0VIeDx7',
+       }
+    }
+
+- 6 In ecommerce/ecommerce/settings/local.py
+    PAYMENT_PROCESSOR_CONFIG = {
+      'razorpay': {
+            'mode': 'sandbox',  # Use 'live' for production
+            'client_id': 'rzp_test_hvDy9KJ3lpn9js',  # Your Razorpay Client ID
+            'client_secret': 'TogGMrqqeWqQxIqzC0VIeDx7',  # Your Razorpay Client Secret
+            'receipt_path': PAYMENT_PROCESSOR_RECEIPT_PATH,
+            'cancel_checkout_path': PAYMENT_PROCESSOR_CANCEL_PATH,
+            'error_path': PAYMENT_PROCESSOR_ERROR_PATH,
+            'currency': 'INR',  # Specify currency
+        },
+    }
+
+- 7 In ecommerce/ecommerce/settings/devstack.py
+    PAYMENT_PROCESSOR_CONFIG = {
+      'razorpay': {
+            'mode': 'sandbox',
+            'client_id': 'rzp_test_hvDy9KJ3lpn9js',
+            'client_secret': 'TogGMrqqeWqQxIqzC0VIeDx7',
+            'cancel_checkout_path': PAYMENT_PROCESSOR_CANCEL_PATH,
+            'error_path': PAYMENT_PROCESSOR_ERROR_PATH,
+        },
+    }
+
+- 8 In env/plugins/ecommerce/apps/ecommerce/settings/production.py
+    PAYMENT_PROCESSORS = list(PAYMENT_PROCESSORS) + ['extensions.payment.processors.razorpay.RazorPay']
+    EXTRA_PAYMENT_PROCESSOR_URLS["razorpay"] = "extensions.payment.processors.razorpay.urls"
+
+- 9 In env/plugins/ecommerce/apps/ecommerce/settings/development.py
+    PAYMENT_PROCESSORS = ['extensions.payment.processors.razorpay.RazorPay']
+    EXTRA_PAYMENT_PROCESSOR_URLS["razorpay"] = "extensions.payment.processors.razorpay.urls"
+
+- 10 In edx-razorpay-extension/extensions/payment/processors/razorpay/processor.py
+     def get_transaction_parameters >
+       redirect_url=payment["short_url"] 
+     make above URL hit in get method. #change method 
+
+- 11 In edx-razorpay-extension/extensions/payment/processors/razorpay/views.py
+     def get > 
+       receipt_url = get_receipt_page_url(
+            request,
+            order_number=basket.order_number,
+            site_configuration=basket.site.siteconfiguration,
+            disable_back_button=True,
+        )
