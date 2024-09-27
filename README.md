@@ -1,11 +1,19 @@
-# Open edX Razorpay Extension
+# 🎓 Open edX Razorpay Extension
 
-This repository contains an extension for integrating Razorpay payment gateway into the Open edX platform. It allows institutions to process payments seamlessly through Razorpay.
+This repository contains an extension for integrating the Razorpay payment gateway into the Open edX platform. It enables institutions to process payments seamlessly through Razorpay. 💳
 
-## Following are the steps to Integrate razorpay into openedx : - 
-- 0 Install extension by following
-    git clone https://github.com/Primzel/edx-razorpay-extension and cp in ecommerce bash in requirements folder
-    pip install edx-razorpay-extension
+## 🚀 Integration Steps
+
+Follow these steps to integrate Razorpay into Open edX:
+
+## Steps to Integrate Razorpay into Open edX:
+
+1. **Install the extension:**
+   ```bash
+   git clone https://github.com/Primzel/edx-razorpay-extension
+   cp edx-razorpay-extension /path/to/openedx/ecommerce/requirements/
+   pip install edx-razorpay-extension
+
    
 - 1 Go to openedx/frontend-app-payment/src/payment/payment-methods/paypal/service.js and change payment_processor
    'paypal' to payment_processor: 'razorpay'
