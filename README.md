@@ -20,7 +20,7 @@ cp edx-razorpay-extension /path/to/openedx/ecommerce/requirements/
 
 2. **Update the payment method** in `openedx/frontend-app-payment/src/payment/payment-methods/paypal/service.js`:
    ```bash   
-   Change `payment_processor: 'paypal'` to `payment_processor: 'razorpay'`
+   payment_processor: 'razorpay'`
    ```
 
 3. **Add the following configuration** in `openedx/config.yml`:
