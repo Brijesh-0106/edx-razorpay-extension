@@ -124,3 +124,12 @@ Follow these steps to integrate Razorpay into Open edX:
     disable_back_button=True,
 )
    ```
+
+13. **Modify `<Ecommerce-link>/admin/core/siteconfiguration/)`**:
+    siteconfiguration:
+        Client-side payment processor:razorpay
+        Payment processors:razorpay
+     Switches:
+        Create:
+          payment_processor_active_razorpay
+             is_active: True
