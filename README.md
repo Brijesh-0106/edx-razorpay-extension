@@ -100,13 +100,13 @@ Follow these steps to integrate Razorpay into Open edX:
    ```
 9. **Modify `env/plugins/ecommerce/apps/ecommerce/settings/production.py`**:
    ```python
-     PAYMENT_PROCESSORS = list(PAYMENT_PROCESSORS) + ['extensions.payment.processors.razorpay.RazorPay']
+   PAYMENT_PROCESSORS = list(PAYMENT_PROCESSORS) + ['extensions.payment.processors.razorpay.RazorPay']
    EXTRA_PAYMENT_PROCESSOR_URLS["razorpay"] = "extensions.payment.processors.razorpay.urls"
    ```
 
 10. **Modify `env/plugins/ecommerce/apps/ecommerce/settings/development.py`**:
    ```python
-    PAYMENT_PROCESSORS = ['extensions.payment.processors.razorpay.RazorPay']
+   PAYMENT_PROCESSORS = ['extensions.payment.processors.razorpay.RazorPay']
    EXTRA_PAYMENT_PROCESSOR_URLS["razorpay"] = "extensions.payment.processors.razorpay.urls"
    ```
 
