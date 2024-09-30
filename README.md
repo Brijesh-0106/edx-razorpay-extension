@@ -12,7 +12,6 @@ Follow these steps to integrate Razorpay into Open edX:
    ```bash
    git clone https://github.com/Primzel/edx-razorpay-extension
    #cp edx-razorpay-extension /path/to/openedx/ecommerce/requirements/
-   ```bash
    pip install edx-razorpay-extension
    ```
 
